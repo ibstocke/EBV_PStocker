@@ -16,6 +16,7 @@
 
 const int nc = OSC_CAM_MAX_IMAGE_WIDTH;
 const int nr = OSC_CAM_MAX_IMAGE_HEIGHT;
+const int Border = 1;
 
 int TextColor;
 
@@ -30,9 +31,31 @@ void ResetProcess()
 }
 
 
+Binarize() {
+		int r, c;
+//set result buffer to zero
+memset(data.u8TempImage[THRESHOLD], 0, IMG_SIZE);
+//loop over the rows
+for(r = Border*nc; r < (nr-Border)*nc; r += nc) {
+//loop over the columns
+for(c = Border; c < (nc-Border); c++) {
+unsigned char p = data.u8TempImage[SENSORIMG][r+c];
+//if the value is smaller than threshold value
+if(p < data.ipc.state.nThreshold) {
+//set pixel value to 255 in THRESHOLD
+data.u8TempImage[THRESHOLD][r+c] = 255;
+}
+	}
+}
+}
+
+
+
+
+
 void ProcessFrame()
 {
-	char Text[] = "hallo world";
+	char Text[] = "hallo das";
 	//initialize counters
 	if(data.ipc.state.nStepCounter == 1) {
 		//use for initialization; only done in first step
@@ -42,6 +65,8 @@ void ProcessFrame()
 		//example for copying sensor image to background image
 		memcpy(data.u8TempImage[BACKGROUND], data.u8TempImage[SENSORIMG], IMG_SIZE);
 
+
+		void Binarize();
 		//example for drawing output
 		//draw line
 		DrawLine(10, 100, 200, 20, RED);
